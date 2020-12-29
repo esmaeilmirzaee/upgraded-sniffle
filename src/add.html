@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add new task</title>
+  </head>
+  <body>
+    <form class="">
+      <label class="ui label">New task</label>
+      <input autofocus />
+    </form>
+    <button type="submit">Add</button>
+  </body>
+  <!-- <script src="../action/add.js"></script> -->
+  <script>
+    var electron = require('electron');
+    var { ipcRenderer } = electron;
+    document.querySelector('form').addEventListener('event', () => {
+      event.preventDefault();
+
+      var value = document.querySelector('input').value;
+      ipcRenderer.send('todo:app', value);
+    });
+  </script>
+</html>
