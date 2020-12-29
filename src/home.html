@@ -13,5 +13,20 @@
     <section class="header">
       <h1 class="ui title red">Welcome</h1>
     </section>
+    <ul></ul>
   </body>
+  <script>
+    var electron = require('electron');
+    var { ipcRenderer } = electron;
+    ipcRenderer.on('todo:add', function addTaskToList(event, todo) {
+      let li = document.createElement('li');
+      let text = document.createTextNode(todo);
+
+      li.appendChild(text);
+      document.querySelector('ul').appendChild(li);
+    });
+    ipcRenderer.on('todo:clear', function emptyTheList(event) {
+      document.querySelector('ul').innerHTML = '';
+    });
+  </script>
 </html>

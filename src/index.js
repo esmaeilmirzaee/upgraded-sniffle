@@ -5,7 +5,9 @@ var { app, BrowserWindow, Menu, ipcMain } = electron;
 var mainWindow;
 
 app.on('ready', function startApp() {
-  mainWindow = new BrowserWindow({});
+  mainWindow = new BrowserWindow({
+    webPreferences: { nodeIntegration: true },
+  });
   mainWindow.loadURL(`file://${__dirname}/home.html`);
   mainWindow.on('closed', function exitApp() {
     app.quit();
@@ -24,6 +26,13 @@ var menuTemplate = [
         accelerator: 'Command+A',
         click() {
           createNewTodo();
+        },
+      },
+      {
+        label: 'Clear',
+        accelerator: process.platform == 'darwin' ? 'Command+C' : 'Ctrl+c',
+        click() {
+          mainWindow.webContents.send('todo:clear');
         },
       },
       {
@@ -54,12 +63,16 @@ function createNewTodo() {
     title: 'Add new task',
   });
   addNewTodo.loadURL(`file://${__dirname}/add.html`);
+  addNewTodo.on('closed', function freeUpMemory() {
+    addNewTodo = null;
+  });
 }
 
 if (process.env.NODE_ENV != 'production') {
   menuTemplate.push({
     label: 'View',
     submenu: [
+      { role: 'reload' },
       {
         label: 'Toggle Developer Tools',
         accelerator: process.platform == 'darwin' ? 'Command+I' : 'Ctrl+I',
@@ -73,6 +86,5 @@ if (process.env.NODE_ENV != 'production') {
 
 ipcMain.on('todo:add', (event, todo) => {
   mainWindow.webContents.send('todo:add', todo);
-  console.log(todo);
   addNewTodo.close();
 });

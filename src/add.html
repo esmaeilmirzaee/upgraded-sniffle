@@ -7,20 +7,22 @@
   </head>
   <body>
     <form class="">
-      <label class="ui label">New task</label>
-      <input autofocus />
+      <div>
+        <label class="ui label">New task</label>
+        <input autofocus />
+      </div>
+      <button type="submit">Add</button>
     </form>
-    <button type="submit">Add</button>
   </body>
   <!-- <script src="../action/add.js"></script> -->
   <script>
     var electron = require('electron');
     var { ipcRenderer } = electron;
-    document.querySelector('form').addEventListener('event', () => {
+    document.querySelector('form').addEventListener('submit', (event) => {
       event.preventDefault();
 
-      var value = document.querySelector('input').value;
-      ipcRenderer.send('todo:app', value);
+      var { value } = document.querySelector('input');
+      ipcRenderer.send('todo:add', value);
     });
   </script>
 </html>
